@@ -8,10 +8,12 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { rxResource, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { switchMap, tap } from 'rxjs';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {RouterLink} from '@angular/router';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-films',
-  imports: [MaterialModule, MatProgressSpinnerModule],
+  imports: [MaterialModule, MatProgressSpinnerModule, RouterLink, FormsModule],
   templateUrl: './films.html',
   styleUrl: './films.scss',
   providers:[FilmsService] // vypýtame si, aby sa vytvoril service, ktorý nemá globálny charakter
@@ -34,7 +36,7 @@ export default class Films implements OnInit, AfterViewInit{
 
 //  columns = signal<string[]>(['id', 'nazov', 'rok']);
   columns = computed(() => this.loggedUser()
-    ? ['id', 'nazov', 'slovenskyNazov', 'rok', 'afi1998', 'afi2007','expand']
+    ? ['id', 'nazov', 'slovenskyNazov', 'rok', 'afi1998', 'afi2007', 'editFilm', 'expand']
     : ['id', 'nazov', 'rok']
   );
 
@@ -43,11 +45,11 @@ export default class Films implements OnInit, AfterViewInit{
   indexFrom = signal<number | undefined>(0);
   indexTo = signal<number | undefined>(5);
   search = signal<string | undefined>(undefined);
-  query = computed(() => new FilmsQuery(this.orderBy(), 
-                                        this.descending(), 
-                                        this.indexFrom(), 
-                                        this.indexTo(), 
-                                        this.search()));
+  query = computed(() => new FilmsQuery(this.orderBy(),
+    this.descending(),
+    this.indexFrom(),
+    this.indexTo(),
+    this.search()));
   // request$ = toObservable(this.query).pipe(
   //   tap(query => console.log('sending new query ' , query)),
   //   switchMap(query => this.filmsService.getFilms(query.orderBy, query.descending, query.indexFrom, query.indexTo, query.search))
@@ -55,13 +57,13 @@ export default class Films implements OnInit, AfterViewInit{
   // filmsResponse = toSignal(this.request$);
   filmsResource = rxResource({
     params: () => this.query(),
-    stream: ({params: query}) => this.filmsService.getFilms(query.orderBy, query.descending, query.indexFrom, query.indexTo, query.search) 
+    stream: ({params: query}) => this.filmsService.getFilms(query.orderBy, query.descending, query.indexFrom, query.indexTo, query.search)
   });
   filmsResponse = this.filmsResource.value;
   loading = this.filmsResource.isLoading;
 
   films = computed(() => this.filmsResponse()?.items || []);
-  
+
   ngOnInit(): void {
     // this.filmsService.getFilms(this.orderBy(), this.descending(), this.indexFrom(), this.indexTo(), this.search()).subscribe(filmsReponse => {
     //   this.films.set(filmsReponse.items);
@@ -85,18 +87,18 @@ export default class Films implements OnInit, AfterViewInit{
   }
 
   onSortEvent(sortEvent: Sort) {
-      console.log('sort event:', sortEvent);
-      if (sortEvent.direction === '') {
-        this.orderBy.set(undefined);
-        this.descending.set(undefined);
-        return;
-      }
-      this.descending.set(sortEvent.direction === 'desc');
-      let column = sortEvent.active;
-      if (column === 'afi1998') column = 'poradieVRebricku.AFI 1998';
-      if (column === 'afi2007') column = 'poradieVRebricku.AFI 2007';
-      this.orderBy.set(column);
-      this.paginator().firstPage();
+    console.log('sort event:', sortEvent);
+    if (sortEvent.direction === '') {
+      this.orderBy.set(undefined);
+      this.descending.set(undefined);
+      return;
+    }
+    this.descending.set(sortEvent.direction === 'desc');
+    let column = sortEvent.active;
+    if (column === 'afi1998') column = 'poradieVRebricku.AFI 1998';
+    if (column === 'afi2007') column = 'poradieVRebricku.AFI 2007';
+    this.orderBy.set(column);
+    this.paginator().firstPage();
   }
 
   onFilter(event: any) {

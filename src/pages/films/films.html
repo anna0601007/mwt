@@ -28,6 +28,15 @@
     <th mat-header-cell *matHeaderCellDef mat-sort-header>AFI 2007</th>
     <td mat-cell *matCellDef="let film">{{film.poradieVRebricku['AFI 2007']}}</td>
   </ng-container>
+  <ng-container matColumnDef="editFilm">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Edit</th>
+    <td mat-cell *matCellDef="let film">
+      <a matIconButton aria-label="edit film" [routerLink]="['/films/edit', film.id]"
+         (click)="$event.stopPropagation()">
+        <mat-icon>edit</mat-icon>
+      </a>
+    </td>
+  </ng-container>
   <ng-container matColumnDef="expand">
     <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
     <td mat-cell *matCellDef="let film">
@@ -45,7 +54,7 @@
   <ng-container matColumnDef="expandedDetail">
     <td mat-cell *matCellDef="let film" [attr.colspan]="columns().length">
       <div class="example-element-detail-wrapper"
-        [class.example-element-detail-wrapper-expanded]="film == expandedFilm">
+           [class.example-element-detail-wrapper-expanded]="film == expandedFilm">
         <div class="example-element-detail">
           <section>
             <h3>Režiséri:</h3>
@@ -57,11 +66,11 @@
             <h3>Postavy:</h3>
             @for(postava of film.postava; track $index) {
               <div>
-              @if(postava.dolezitost === "hlavná postava") {
-                <strong>{{postava.postava}}</strong>: {{postava.herec.krstneMeno}} {{postava.herec.stredneMeno}} {{postava.herec.priezvisko}}
-              } @else {
-                <em>{{postava.postava}}</em>: {{postava.herec.krstneMeno}} {{postava.herec.stredneMeno}} {{postava.herec.priezvisko}}
-              }
+                @if(postava.dolezitost === "hlavná postava") {
+                  <strong>{{postava.postava}}</strong>: {{postava.herec.krstneMeno}} {{postava.herec.stredneMeno}} {{postava.herec.priezvisko}}
+                } @else {
+                  <em>{{postava.postava}}</em>: {{postava.herec.krstneMeno}} {{postava.herec.stredneMeno}} {{postava.herec.priezvisko}}
+                }
               </div>
             }
           </section>
@@ -86,8 +95,11 @@
   <mat-spinner></mat-spinner>
 }
 <mat-paginator [length]="filmsResponse()?.totalCount || 0"
-              [pageSize]="5"
-              [pageSizeOptions]="[2, 5, 10, 25, 100]"
-              aria-label="Select page"
-              (page)="onPageEvent($event)">
+               [pageSize]="5"
+               [pageSizeOptions]="[2, 5, 10, 25, 100]"
+               aria-label="Select page"
+               (page)="onPageEvent($event)">
 </mat-paginator>
+
+<a routerLink="/films/new" [routerLink]="['/films/new']"
+   [state]="{ checker: false }"  matButton routerLinkActive="active" ><mat-icon>add_circle_outline</mat-icon> New film</a>

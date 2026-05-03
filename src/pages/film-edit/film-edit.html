@@ -1,0 +1,215 @@
+<form (submit)="onSubmit($event)" novalidate>
+  <mat-card class="login-card" appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>{{ title() }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-form-field>
+        <mat-label>Title</mat-label>
+        <input matInput [formField]="filmForm.nazov" />
+        <mat-hint>Insert title</mat-hint>
+        <mat-error>
+          @if (filmForm.nazov().invalid() && (filmForm.nazov().touched() || submitted())) {
+            {{ filmForm.nazov().errors()[0].message }}
+          }
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Year</mat-label>
+        <input matInput type="number" [formField]="filmForm.rok" />
+        <mat-hint>Insert year</mat-hint>
+        <mat-error>
+          @if (filmForm.rok().invalid() && (filmForm.rok().touched() || submitted())) {
+            {{ filmForm.rok().errors()[0].message }}
+          }
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Slovak title</mat-label>
+        <input matInput [formField]="filmForm.slovenskyNazov" />
+        <mat-hint>Insert Slovak title</mat-hint>
+        <mat-error>
+          @if (filmForm.slovenskyNazov().invalid() && (filmForm.slovenskyNazov().touched() || submitted())) {
+            {{ filmForm.slovenskyNazov().errors()[0].message }}
+          }
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>IMDb ID</mat-label>
+        <input matInput [formField]="filmForm.imdbID" />
+        <mat-hint>Insert IMDb ID</mat-hint>
+        <mat-error>
+          @if (filmForm.imdbID().invalid() && (filmForm.imdbID().touched() || submitted())) {
+            {{ filmForm.imdbID().errors()[0].message }}
+          }
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>AFI 1998 ranking</mat-label>
+        <input matInput type="number" [formField]="filmForm.afi1998" />
+        <mat-hint>Optional</mat-hint>
+        <mat-error>
+          @if (filmForm.afi1998().invalid() && (filmForm.afi1998().touched() || submitted())) {
+            {{ filmForm.afi1998().errors()[0].message }}
+          }
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>AFI 2007 ranking</mat-label>
+        <input matInput type="number" [formField]="filmForm.afi2007" />
+        <mat-hint>Optional</mat-hint>
+        <mat-error>
+          @if (filmForm.afi2007().invalid() && (filmForm.afi2007().touched() || submitted())) {
+            {{ filmForm.afi2007().errors()[0].message }}
+          }
+        </mat-error>
+      </mat-form-field>
+
+      <p><strong>Directors</strong></p>
+
+      @for (directorField of filmForm.reziseri; track $index; let i = $index) {
+        <div class="director-block">
+          <div class="director-row">
+            <mat-form-field>
+              <mat-label>First name</mat-label>
+              <input matInput [formField]="directorField.krstneMeno" />
+              <mat-hint>Insert first name</mat-hint>
+              <mat-error>
+                @if (directorField.krstneMeno().invalid() && (directorField.krstneMeno().touched() || submitted())) {
+                  {{ directorField.krstneMeno().errors()[0].message }}
+                }
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Middle name</mat-label>
+              <input matInput [formField]="directorField.stredneMeno" />
+              <mat-hint>Optional</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Last name</mat-label>
+              <input matInput [formField]="directorField.priezvisko" />
+              <mat-hint>Insert last name</mat-hint>
+              <mat-error>
+                @if (directorField.priezvisko().invalid() && (directorField.priezvisko().touched() || submitted())) {
+                  {{ directorField.priezvisko().errors()[0].message }}
+                }
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <button
+            type="button"
+            matButton
+            class="remove-btn-under"
+            (click)="removeDirector(i)"
+          >
+            Remove
+          </button>
+        </div>
+      }
+
+      <button
+        type="button"
+        matButton
+        class="add-btn-left"
+        (click)="addDirector()"
+      >
+        Add director
+      </button>
+
+      <p><strong>Characters</strong></p>
+
+      @for (characterField of filmForm.postavy; track $index; let i = $index) {
+        <div class="character-block">
+          <div class="character-main-row">
+            <mat-form-field>
+              <mat-label>Character name</mat-label>
+              <input matInput [formField]="characterField.postava" />
+              <mat-hint>Insert character name</mat-hint>
+              <mat-error>
+                @if (characterField.postava().invalid() && (characterField.postava().touched() || submitted())) {
+                  {{ characterField.postava().errors()[0].message }}
+                }
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Importance</mat-label>
+              <select matNativeControl [formField]="characterField.dolezitost">
+                <option value="">Select importance</option>
+                <option value="hlavná postava">hlavná postava</option>
+                <option value="vedľajšia postava">vedľajšia postava</option>
+              </select>
+              <mat-hint>Select importance</mat-hint>
+              <mat-error>
+                @if (characterField.dolezitost().invalid() && (characterField.dolezitost().touched() || submitted())) {
+                  {{ characterField.dolezitost().errors()[0].message }}
+                }
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="actor-row">
+            <mat-form-field>
+              <mat-label>Actor first name</mat-label>
+              <input matInput [formField]="characterField.herec.krstneMeno" />
+              <mat-hint>Insert first name</mat-hint>
+              <mat-error>
+                @if (characterField.herec.krstneMeno().invalid() && (characterField.herec.krstneMeno().touched() || submitted())) {
+                  {{ characterField.herec.krstneMeno().errors()[0].message }}
+                }
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Actor middle name</mat-label>
+              <input matInput [formField]="characterField.herec.stredneMeno" />
+              <mat-hint>Optional</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Actor last name</mat-label>
+              <input matInput [formField]="characterField.herec.priezvisko" />
+              <mat-hint>Insert last name</mat-hint>
+              <mat-error>
+                @if (characterField.herec.priezvisko().invalid() && (characterField.herec.priezvisko().touched() || submitted())) {
+                  {{ characterField.herec.priezvisko().errors()[0].message }}
+                }
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <button
+            type="button"
+            matButton
+            class="remove-btn-under"
+            (click)="removeCharacter(i)"
+          >
+            Remove
+          </button>
+        </div>
+      }
+
+      <button
+        type="button"
+        matButton
+        class="add-btn-left"
+        (click)="addCharacter()"
+      >
+        Add character
+      </button>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button matButton type="submit">Save film</button>
+    </mat-card-actions>
+  </mat-card>
+</form>

@@ -8,15 +8,16 @@ import { canDeactivateGuard } from '../guards/can-deactivate-guard';
 import { provideHttpClient, withInterceptors, withRequestsMadeViaParent } from '@angular/common/http';
 import { authInterceptor } from '../interceptors/auth-interceptor';
 import Films from '../pages/films/films';
+import {FilmEdit} from '../pages/film-edit/film-edit';
 
 export const routes: Routes = [
-  {path: 'users', component: UsersTable, 
+  {path: 'users', component: UsersTable,
     canActivate:[authGuard]},
   {path: 'login', component: Login},
   {path: 'register',
     loadComponent: () => import('../pages/register/register')
   },
-  {path: 'user/new', component: UserEdit, 
+  {path: 'user/new', component: UserEdit,
     data: {myValue: 'haha'},
     canActivate:[authGuard],
     canDeactivate: [canDeactivateGuard]
@@ -24,7 +25,7 @@ export const routes: Routes = [
   {path: 'user/edit/:id', component: UserEdit,
     canActivate:[authGuard],
     canDeactivate: [canDeactivateGuard]},
-  {path: 'groups', 
+  {path: 'groups',
     loadChildren:() => import('../modules/groups/groups-module').then(mod => mod.GroupsModule),
     canMatch:[authMatchGuard]
   },
@@ -34,6 +35,15 @@ export const routes: Routes = [
       withInterceptors([authInterceptor]),
       withRequestsMadeViaParent()
     )],
+  },
+  {path: 'films/new', component: FilmEdit,
+    canActivate:[authGuard],
+    canDeactivate: [canDeactivateGuard]
+  },
+  {path: 'films/edit/:id',
+    component: FilmEdit,
+    canActivate: [authGuard],
+    canDeactivate: [canDeactivateGuard]
   },
   { path: 'chat', loadComponent: () => import('../pages/chat/chat').then(c => c.Chat)},
   {path: '', redirectTo:'/login', pathMatch: 'full'},
